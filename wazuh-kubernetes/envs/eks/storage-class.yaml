@@ -13,6 +13,7 @@ metadata:
   name: wazuh-storage
 provisioner: ebs.csi.aws.com
 parameters:
+  kmsKeyId: "${KMS_KEY_ARN}"
   encrypted: 'true'
   type: gp2
 volumeBindingMode: WaitForFirstConsumer
