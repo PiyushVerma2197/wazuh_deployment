@@ -11,7 +11,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: ${NLB_DNS}
+    - host: ${nlb_dns}
       http:
         paths:
           - path: /
