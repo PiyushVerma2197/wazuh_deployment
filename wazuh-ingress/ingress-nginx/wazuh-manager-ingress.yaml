@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wazuh-manager-ingress
+  namespace: wazuh
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: krypton.wagepoint.io
+      http:
+        paths:
+          - path: /register
+            pathType: Prefix
+            backend:
+              service:
+                name: wazuh
+                port:
+                  number: 1515
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: wazuh
+                port:
+                  number: 55000
+

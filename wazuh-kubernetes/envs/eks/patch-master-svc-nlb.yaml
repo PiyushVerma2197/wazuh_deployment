@@ -1,0 +1,25 @@
+# envs/eks/patch-master-svc-nlb.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: wazuh
+  namespace: wazuh
+  annotations:
+    # Request NLB instead of CLB
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    # Make it internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    # Associate with hostname using external-dns (remove if not using external-dns)
+    external-dns.alpha.kubernetes.io/hostname: krypton.wagepoint.io.
+    # Remove CLB specific annotation if present
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: null
+spec:
+  ports:
+    # Keep only the registration port for the NLB
+    - name: registration
+      port: 1515
+      targetPort: 1515
+    # Remove the api port from this LB service definition
+    - name: api
+      $patch: delete

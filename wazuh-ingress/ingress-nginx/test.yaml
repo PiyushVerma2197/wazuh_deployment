@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wazuh-dashboard-ingress
+  namespace: wazuh
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^/dashboard(/|$)(.*) /$2 break;
+      proxy_redirect https://$host/app/ /dashboard/;
+      rewrite ^/ui/(.*)$ /dashboard/ui/$1 break;
+      rewrite ^/fonts/(.*)$ /dashboard/fonts/$1 break;
+      sub_filter '/ui/' '/dashboard/ui/';
+      sub_filter
+      sub_filter '/' '/dashboard/';
+      sub_filter_once off;
+      sub_filter_types *;
+#      rewrite ^/dashboard(/|$)(.*) /$2 break;
+#      rewrite ^/ui/(.*)$ /dashboard/ui/$1 break;
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/x-forwarded-prefix: /dashboard
+    nginx.ingress.kubernetes.io/proxy-redirect-from: http://$http_host/(.*)
+    nginx.ingress.kubernetes.io/proxy-redirect-to: https://$http_host/dashboard/
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: krypton.wagepoint.io
+      http:
+        paths:
+          - path: /dashboard/(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 5601

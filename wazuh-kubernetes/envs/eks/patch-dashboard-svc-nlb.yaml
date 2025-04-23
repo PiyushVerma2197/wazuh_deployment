@@ -1,0 +1,26 @@
+# envs/eks/patch-dashboard-svc-nlb.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  namespace: wazuh
+  annotations:
+    # Request NLB instead of CLB
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    # Make it internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    # Associate with hostname using external-dns (remove if not using external-dns)
+    external-dns.alpha.kubernetes.io/hostname: krypton.wagepoint.io.
+    # Specify ACM ARN for TLS termination (REPLACE PLACEHOLDER)
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:ap-south-1:874196071768:certificate/cc54c728-475d-43c6-8405-492ff640b771"
+    # Specify the port for TLS termination
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    # For NLB TLS, backend is typically TCP unless pod expects TLS. Wazuh dashboard default is HTTP on 5601.
+    # The controller usually defaults target group to TCP when ssl-cert is used. Remove explicit backend protocol.
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: null
+spec:
+  ports:
+    - name: dashboard
+      port: 443
+      targetPort: 5601 # Wazuh dashboard listens on 5601 (HTTP by default)

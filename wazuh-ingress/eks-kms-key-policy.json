@@ -1,0 +1,29 @@
+{
+  "Version": "2012-10-17",
+  "Id": "AllowEKSCluster",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::874196071768:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowEKSClusterRole",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::874196071768:role/eks-cluster-role-wazuh12"
+      },
+  "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:GenerateDataKey*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

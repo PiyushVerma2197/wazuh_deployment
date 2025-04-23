@@ -1,0 +1,32 @@
+# Copyright (C) 2019, Wazuh Inc.
+#
+# This program is a free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public
+# License (version 2) as published by the FSF - Free Software
+# Foundation.
+
+# Dashboard service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  namespace: wazuh
+  labels:
+    app: wazuh-dashboard
+    # dns: route53
+  annotations:
+    # Remove load balancer-specific annotations
+    # domainName: 'changeme'
+    # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: 'changeme'
+    # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: '443'
+    # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
+spec:
+  type: ClusterIP  # Change from LoadBalancer to ClusterIP
+  selector:
+    app: wazuh-dashboard  # Selector for dashboard pods
+  ports:
+    - name: dashboard
+      port: 5601  # The port exposed by this service
+      targetPort: 5601  # The port on which the Wazuh dashboard is running
+

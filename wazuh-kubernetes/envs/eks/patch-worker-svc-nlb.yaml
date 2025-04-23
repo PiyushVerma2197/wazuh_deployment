@@ -1,0 +1,16 @@
+# envs/eks/patch-worker-svc-nlb.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: wazuh-workers
+  namespace: wazuh
+  annotations:
+    # Request NLB instead of CLB
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    # Make it internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    # Associate with hostname using external-dns (remove if not using external-dns)
+    external-dns.alpha.kubernetes.io/hostname: krypton.wagepoint.io.
+    # Remove annotation potentially conflicting with scheme
+    service.beta.kubernetes.io/aws-load-balancer-internal: null
