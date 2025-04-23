@@ -15,6 +15,6 @@ provisioner: ebs.csi.aws.com
 parameters:
   kmsKeyId: "${kms_key_arn}"
   encrypted: 'true'
-  type: gp2
+  type: gp3
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Retain  # Useful in case you delete the PersistentVolumeClaim
