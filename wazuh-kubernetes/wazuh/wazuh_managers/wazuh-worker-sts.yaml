@@ -46,6 +46,8 @@ spec:
             secretName: indexer-certs
       securityContext:
         fsGroup: 101
+      nodeSelector:
+        role: wazuh-worker-node  
       containers:
         - name: wazuh-manager
           image: 'wazuh/wazuh-manager:4.11.2'
