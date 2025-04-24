@@ -41,7 +41,7 @@ spec:
         fsGroup: 101
       serviceAccountName: wazuh-manager-sa
       nodeSelector:
-        role: wazuh-master-node
+        role: wazuh-manager-node
       containers:
         - name: wazuh-manager
           image: 'wazuh/wazuh-manager:4.11.2'
